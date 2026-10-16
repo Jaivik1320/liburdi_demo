@@ -1,0 +1,1324 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>WeldControl Studio</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root {
+    --bg:#f0f2f5;--surface:#fff;--surface2:#f7f8fa;--border:#dde1e8;
+    --text:#1a1d23;--text2:#5a6070;--text3:#8a92a0;
+    --accent:#c0392b;--accent2:#e74c3c;--accent-soft:#fdf2f1;
+    --blue:#2563eb;--green:#16a34a;--green-soft:#f0fdf4;
+    --yellow:#d97706;--yellow-soft:#fffbeb;
+    --nav-bg:#1a1d23;--nav-text:#c8cdd8;--sidebar-bg:#22262f;
+    color-scheme:light;
+  }
+  @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --bg:#111318;--surface:#1a1d24;--surface2:#22262f;--border:#2e3240;
+    --text:#e8eaf0;--text2:#8a92a6;--text3:#5a6070;
+    --accent:#e74c3c;--accent2:#ff6b5b;--accent-soft:#2a1614;
+    --blue:#3b82f6;--green:#22c55e;--green-soft:#0d2218;
+    --yellow:#f59e0b;--yellow-soft:#1e1608;
+    --nav-bg:#0e1015;--nav-text:#8a92a6;--sidebar-bg:#141720;
+    color-scheme:dark;
+  }}
+  :root[data-theme="dark"]{
+    --bg:#111318;--surface:#1a1d24;--surface2:#22262f;--border:#2e3240;
+    --text:#e8eaf0;--text2:#8a92a6;--text3:#5a6070;
+    --accent:#e74c3c;--accent2:#ff6b5b;--accent-soft:#2a1614;
+    --blue:#3b82f6;--green:#22c55e;--green-soft:#0d2218;
+    --yellow:#f59e0b;--yellow-soft:#1e1608;
+    --nav-bg:#0e1015;--nav-text:#8a92a6;--sidebar-bg:#141720;
+    color-scheme:dark;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;min-height:100vh;font-family:'Inter',system-ui,sans-serif;font-size:14px;background:var(--bg);color:var(--text)}
+  .app{display:flex;flex-direction:column;min-height:100vh;height:100vh}
+  .topbar{display:flex;align-items:center;gap:12px;background:var(--nav-bg);padding:0 20px;height:52px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0}
+  .logo{display:flex;align-items:center;gap:10px}
+  .logo svg{width:28px;height:28px}
+  .logo-text{font-size:15px;font-weight:700;color:#fff;letter-spacing:-.3px}
+  .logo-text span{color:var(--accent2)}
+  .tdiv{width:1px;height:24px;background:rgba(255,255,255,.1);margin:0 4px}
+  .tnav{display:flex;gap:2px;flex:1}
+  .tnav button{background:none;border:none;cursor:pointer;color:var(--nav-text);font-size:13px;font-family:inherit;font-weight:500;padding:6px 14px;border-radius:6px;transition:all .15s}
+  .tnav button:hover{background:rgba(255,255,255,.07);color:#fff}
+  .tnav button.active{background:rgba(231,76,60,.2);color:var(--accent2)}
+  .tright{display:flex;align-items:center;gap:10px;margin-left:auto}
+  .spill{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;background:rgba(22,163,74,.15);color:#4ade80;font-size:11px;font-weight:600;letter-spacing:.3px;transition:all .4s}
+  .sdot{width:6px;height:6px;border-radius:50%;background:#4ade80;animation:blink 2s ease-in-out infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+  .tbtn{background:rgba(255,255,255,.08);border:none;cursor:pointer;color:var(--nav-text);padding:6px 10px;border-radius:6px;font-size:13px;transition:all .15s}
+  .tbtn:hover{background:rgba(255,255,255,.14);color:#fff}
+  .main{display:flex;flex:1;overflow:hidden;min-height:0}
+  .sidebar{width:220px;flex-shrink:0;background:var(--sidebar-bg);border-right:1px solid rgba(255,255,255,.06);display:flex;flex-direction:column;overflow-y:auto}
+  .sb-sec{padding:16px 0 8px}
+  .sb-lbl{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text3);padding:0 16px 6px}
+  .sb-item{display:flex;align-items:center;gap:10px;padding:8px 16px;cursor:pointer;color:var(--nav-text);font-size:13px;transition:all .12s}
+  .sb-item:hover{background:rgba(255,255,255,.05);color:#fff}
+  .sb-item.active{background:rgba(231,76,60,.12);color:var(--accent2);border-left:2px solid var(--accent2)}
+  .sb-item .ic{font-size:14px;width:18px;text-align:center}
+  .sb-badge{margin-left:auto;background:var(--accent);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px}
+  .page{display:none;flex:1;overflow-y:auto;padding:24px}
+  .page.active{display:block}
+  .ph{margin-bottom:20px}
+  .pt{font-size:20px;font-weight:700;color:var(--text)}
+  .ps{font-size:13px;color:var(--text2);margin-top:3px}
+  .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+  .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px}
+  .ctitle{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--text2);margin-bottom:10px}
+  .sval{font-size:28px;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums}
+  .slbl{font-size:12px;color:var(--text2);margin-top:2px}
+  .sbadge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;margin-top:6px;padding:2px 8px;border-radius:12px}
+  .bg{background:var(--green-soft);color:var(--green)}
+  .by{background:var(--yellow-soft);color:var(--yellow)}
+  .br{background:var(--accent-soft);color:var(--accent)}
+  .bb{background:#eff6ff;color:var(--blue)}
+  @media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .bb{background:#1e3058}}
+  :root[data-theme="dark"] .bb{background:#1e3058}
+  table{width:100%;border-collapse:collapse}
+  th{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);text-align:left;padding:8px 12px;border-bottom:1px solid var(--border)}
+  td{padding:10px 12px;border-bottom:1px solid var(--border);font-size:13px;color:var(--text);vertical-align:middle}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:var(--surface2)}
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:inherit;transition:all .15s}
+  .btn-p{background:var(--accent);color:#fff}
+  .btn-p:hover{background:var(--accent2)}
+  .btn-o{background:none;border:1px solid var(--border);color:var(--text2)}
+  .btn-o:hover{border-color:var(--accent);color:var(--accent)}
+  .btn-g{background:var(--green);color:#fff}
+  .btn-g:hover{opacity:.9}
+  .btn-sm{padding:4px 10px;font-size:12px}
+  canvas{display:block}
+  .ew{background:#0d1117;border-radius:8px;padding:16px;overflow-x:auto}
+  .ew pre{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;color:#c9d1d9;white-space:pre}
+  .kw{color:#ff7b72}.ty{color:#79c0ff}.str{color:#a5d6ff}.cm{color:#8b949e}.num{color:#79c0ff}.fn{color:#d2a8ff}.prop{color:#e3b341}
+  .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .fg{display:flex;flex-direction:column;gap:5px}
+  .fl{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.5px}
+  .fi{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;color:var(--text);font-family:'JetBrains Mono',monospace;outline:none;transition:border .15s;width:100%}
+  .fi:focus{border-color:var(--accent)}
+  select.fi{cursor:pointer}
+  .pbw{background:var(--border);border-radius:4px;height:6px;overflow:hidden}
+  .pb{height:100%;border-radius:4px;transition:width .4s}
+  .alert{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:8px;margin-bottom:16px}
+  .aw{background:var(--yellow-soft);border:1px solid rgba(217,119,6,.2);color:var(--yellow)}
+  .ag{background:var(--green-soft);border:1px solid rgba(22,163,74,.2);color:var(--green)}
+  .tl{display:flex;flex-direction:column}
+  .tli{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--border)}
+  .tli:last-child{border-bottom:none}
+  .tld{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:4px}
+  .tdg{background:var(--green)}.tdy{background:var(--yellow)}.tdr{background:var(--accent)}
+  .tlt{font-size:11px;color:var(--text3);white-space:nowrap;min-width:64px}
+  .tlx{font-size:13px;color:var(--text)}
+  .tls{font-size:11px;color:var(--text2);margin-top:2px}
+  .lw{background:#0d1117;border-radius:8px;padding:14px;height:220px;overflow-y:auto;font-family:'JetBrains Mono',monospace;font-size:11px}
+  .ll{display:flex;gap:10px;margin-bottom:3px}
+  .lts{color:#6e7681}.lok{color:#3fb950}.lwn{color:#d29922}.ler{color:#f85149}.lin{color:#79c0ff}
+  .rc{display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;margin-bottom:20px;flex-wrap:wrap}
+  .rcl{font-size:12px;color:var(--text2)}
+  .rcv{font-size:13px;font-weight:600;color:var(--green)}
+  .rspd{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums}
+  .chip{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600}
+  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:100}
+  .modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px;width:440px;max-width:95vw}
+  .modal h3{font-size:16px;font-weight:700;margin-bottom:16px;color:var(--text)}
+  .modal-actions{display:flex;gap:10px;margin-top:20px;justify-content:flex-end}
+  .toast{position:fixed;bottom:24px;right:24px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 18px;font-size:13px;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,.18);z-index:200;display:flex;align-items:center;gap:10px;animation:slidein .25s ease}
+  @keyframes slidein{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+  .inp-row{display:flex;gap:10px;margin-bottom:12px}
+  .tab-btns{display:flex;gap:4px;margin-bottom:16px;background:var(--surface2);padding:4px;border-radius:8px;border:1px solid var(--border)}
+  .tab-btn{flex:1;padding:6px 0;border:none;background:none;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;color:var(--text2);font-family:inherit;transition:all .15s}
+  .tab-btn.active{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+  .tab-pane{display:none}.tab-pane.active{display:block}
+  @media(max-width:700px){.sidebar{display:none}.g4{grid-template-columns:1fr 1fr}.g2,.g3{grid-template-columns:1fr}.pgrid{grid-template-columns:1fr}}
+</style>
+
+<div class="app">
+  <div class="topbar">
+    <div class="logo">
+      <svg viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="#c0392b"/><path d="M7 20 L14 8 L21 20" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="14" cy="14" r="2.5" fill="white"/></svg>
+      <span class="logo-text">Weld<span>Control</span> Studio</span>
+    </div>
+    <div class="tdiv"></div>
+    <div class="tnav">
+      <button class="active" onclick="goPage('dashboard',this)">Dashboard</button>
+      <button onclick="goPage('programs',this)">Programs</button>
+      <button onclick="goPage('machines',this)">Machines</button>
+      <button onclick="goPage('diagnostics',this)">Diagnostics</button>
+      <button onclick="goPage('customers',this)">Customers</button>
+      <button onclick="goPage('reports',this)">Reports</button>
+    </div>
+    <div class="tright">
+      <div class="spill" id="plcPill"><div class="sdot"></div><span id="plcTxt">PLC Connected</span></div>
+      <button class="tbtn" onclick="toggleTheme()">◑ Theme</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="sidebar">
+      <div class="sb-sec">
+        <div class="sb-lbl">Active Jobs</div>
+        <div class="sb-item active" id="sb-dashboard" onclick="goPage('dashboard',null)"><span class="ic">🏭</span> Overview</div>
+        <div class="sb-item" id="sb-wp2847" onclick="loadProgram('WP-2847')"><span class="ic">📋</span> WP-2847 — Aerospace</div>
+        <div class="sb-item" id="sb-wp2848" onclick="loadProgram('WP-2848')"><span class="ic">📋</span> WP-2848 — Power Gen</div>
+        <div class="sb-item" id="sb-wp2849" onclick="loadProgram('WP-2849')"><span class="ic">📋</span> WP-2849 — Medical</div>
+      </div>
+      <div class="sb-sec">
+        <div class="sb-lbl">Machines</div>
+        <div class="sb-item" onclick="goPage('machines',null)"><span class="ic">🤖</span> LAS-7 Orbital <span class="sb-badge" id="las7badge">RUN</span></div>
+        <div class="sb-item" onclick="goPage('machines',null)"><span class="ic">🤖</span> PLA-3 GTAW</div>
+        <div class="sb-item" onclick="goPage('machines',null)"><span class="ic">🤖</span> ARC-5 Gantry</div>
+      </div>
+      <div class="sb-sec">
+        <div class="sb-lbl">Diagnostics</div>
+        <div class="sb-item" onclick="goPage('diagnostics',null)"><span class="ic">⚠️</span> Fault Log <span class="sb-badge" id="faultBadge">2</span></div>
+        <div class="sb-item" onclick="goPage('reports',null)"><span class="ic">📊</span> Reports</div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="ph"><div class="pt">Production Dashboard</div><div class="ps">Liburdi Automation — Hamilton, ON · Oct 15, 2026 · Shift A</div></div>
+      <div class="alert ag" id="dashAlert">✅ &nbsp;<div><strong>LAS-7 Orbital</strong> running WP-2847 (Turbine Blade Repair). <span id="dashPct">82%</span> complete — on schedule.</div></div>
+      <div class="g4">
+        <div class="card"><div class="ctitle">Welds Today</div><div class="sval" id="weldCount">247</div><div class="slbl">Pass rate</div><div class="sbadge bg">✓ <span id="passRate">98.4</span>%</div></div>
+        <div class="card"><div class="ctitle">Arc Time</div><div class="sval" id="arcTime">6.2h</div><div class="slbl">Target: 7.0h</div><div class="sbadge by">⬤ 88%</div></div>
+        <div class="card"><div class="ctitle">Active Machines</div><div class="sval" id="activeMachines">2 / 3</div><div class="slbl">ARC-5 in maintenance</div><div class="sbadge bb">ℹ Scheduled</div></div>
+        <div class="card"><div class="ctitle">Open Faults</div><div class="sval" id="dashFaults">2</div><div class="slbl">Wire feed &amp; gas flow</div><div class="sbadge by" id="dashFaultBadge">⚠ Non-critical</div></div>
+      </div>
+      <div class="g2">
+        <div class="card"><div class="ctitle">Arc Voltage — 24h</div><canvas id="voltChart" style="width:100%;height:140px;max-width:100%"></canvas></div>
+        <div class="card"><div class="ctitle">Wire Feed Speed — 24h</div><canvas id="wireChart" style="width:100%;height:140px;max-width:100%"></canvas></div>
+      </div>
+      <div class="g2">
+        <div class="card">
+          <div class="ctitle">Active Programs</div>
+          <table>
+            <thead><tr><th>ID</th><th>Part</th><th>Machine</th><th>Status</th><th>Progress</th></tr></thead>
+            <tbody id="progTable">
+              <tr><td><span style="font-family:monospace;font-size:12px">WP-2847</span></td><td>Turbine Blade</td><td>LAS-7</td><td><span class="chip bg">Running</span></td><td style="min-width:80px"><div class="pbw"><div class="pb" id="pb2847" style="width:82%;background:var(--green)"></div></div></td></tr>
+              <tr><td><span style="font-family:monospace;font-size:12px">WP-2848</span></td><td>Pipe Manifold</td><td>PLA-3</td><td><span class="chip bg">Running</span></td><td><div class="pbw"><div class="pb" id="pb2848" style="width:51%;background:var(--green)"></div></div></td></tr>
+              <tr><td><span style="font-family:monospace;font-size:12px">WP-2849</span></td><td>Surgical Housing</td><td>ARC-5</td><td><span class="chip by" id="s2849">Queued</span></td><td><div class="pbw"><div class="pb" id="pb2849" style="width:0%;background:var(--yellow)"></div></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="ctitle">Recent Events</div>
+          <div class="tl" id="eventLog">
+            <div class="tli"><div class="tld tdg"></div><div class="tlt">09:14</div><div><div class="tlx">WP-2847 resumed after cooldown</div><div class="tls">LAS-7 · Pass #203</div></div></div>
+            <div class="tli"><div class="tld tdy"></div><div class="tlt">08:52</div><div><div class="tlx">Wire feed tension warning — F-0041</div><div class="tls">PLA-3 · Threshold: 2.8 N · Actual: 3.1 N</div></div></div>
+            <div class="tli"><div class="tld tdg"></div><div class="tlt">08:30</div><div><div class="tlx">Shift A started — operator: J. Parekh</div><div class="tls">PLC handshake OK · All sensors nominal</div></div></div>
+            <div class="tli"><div class="tld tdr"></div><div class="tlt">07:58</div><div><div class="tlx">ARC-5 scheduled maintenance started</div><div class="tls">Gantry calibration · ETA 2h</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROGRAMS -->
+    <div class="page" id="page-programs">
+      <div class="ph"><div class="pt">Weld Programs</div><div class="ps">C# / XML-defined motion sequences — editable parameters, real-time override</div></div>
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+        <select class="fi" id="progSelect" style="width:auto;min-width:220px" onchange="loadProgram(this.value)">
+          <option value="WP-2847">WP-2847 — Turbine Blade Repair (Aerospace)</option>
+          <option value="WP-2848">WP-2848 — Pipe Manifold (Power Gen)</option>
+          <option value="WP-2849">WP-2849 — Surgical Housing (Medical)</option>
+        </select>
+        <button class="btn btn-o btn-sm" onclick="openNewProgModal()">＋ New Program</button>
+        <button class="btn btn-o btn-sm" onclick="duplicateProg()">⎘ Duplicate</button>
+      </div>
+      <div class="rc">
+        <div><div class="rcl">Current Program</div><div style="font-size:14px;font-weight:600;color:var(--text)" id="progTitle">WP-2847 — Turbine Blade Repair (Aerospace)</div></div>
+        <div style="margin-left:auto;text-align:right"><div class="rcl">Travel Speed</div><div class="rspd" id="speedVal">4.2 mm/s</div></div>
+        <div style="text-align:right"><div class="rcl">Arc Voltage</div><div class="rspd" id="voltVal">12.8 V</div></div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span class="chip bg" id="runStatus">● Running</span>
+          <button class="btn btn-o btn-sm" onclick="jogOverride()">⟳ Jog</button>
+          <button class="btn btn-sm" style="background:#c0392b;color:#fff" id="estopBtn" onclick="eStop()">⬛ E-STOP</button>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="card">
+          <div class="ctitle">Program Parameters</div>
+          <div class="pgrid" style="margin-top:10px">
+            <div class="fg"><div class="fl">Process</div><select class="fi" id="pProcess"><option>GTAW (TIG)</option><option>Laser Powder</option><option>Plasma</option><option>Orbital</option></select></div>
+            <div class="fg"><div class="fl">Travel Speed (mm/s)</div><input class="fi" type="number" step="0.1" id="pSpeed" value="4.2" oninput="updateLive()"/></div>
+            <div class="fg"><div class="fl">Arc Voltage (V)</div><input class="fi" type="number" step="0.1" id="pVolt" value="12.8" oninput="updateLive()"/></div>
+            <div class="fg"><div class="fl">Wire Feed (m/min)</div><input class="fi" type="number" step="0.1" id="pWire" value="3.5"/></div>
+            <div class="fg"><div class="fl">Shield Gas (L/min)</div><input class="fi" type="number" step="0.1" id="pGas" value="18.0"/></div>
+            <div class="fg"><div class="fl">Preheat Temp (°C)</div><input class="fi" type="number" id="pPreheat" value="150"/></div>
+            <div class="fg"><div class="fl">Oscillation (mm)</div><input class="fi" type="number" step="0.1" id="pOsc" value="2.4"/></div>
+            <div class="fg"><div class="fl">Torch Angle (°)</div><input class="fi" type="number" id="pAngle" value="15"/></div>
+          </div>
+          <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-p" onclick="saveParams()">💾 Save to Program</button>
+            <button class="btn btn-o" onclick="resetParams()">↩ Reset</button>
+            <button class="btn btn-o" style="color:var(--accent);border-color:var(--accent)" onclick="validateParams()">✔ Validate</button>
+          </div>
+          <div id="save-msg" hidden style="margin-top:10px;font-size:12px;color:var(--green)">✓ Parameters saved to <span id="saveFile">WP-2847.xml</span></div>
+          <div id="val-msg" hidden style="margin-top:10px;font-size:12px;color:var(--green)">✓ All parameters within ISO 9001 tolerances</div>
+          <div id="val-err" hidden style="margin-top:10px;font-size:12px;color:var(--accent)">⚠ Arc voltage out of range (11.5–14.0 V)</div>
+        </div>
+        <div class="card">
+          <div class="ctitle">XML Source — <span id="xmlTitle">WP-2847.xml</span></div>
+          <div class="ew" style="margin-top:10px"><pre id="xmlPre"></pre></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ctitle">C# Controller — MotionController.cs</div>
+        <div class="ew" style="margin-top:10px"><pre><span class="cm">// WeldControl Studio · Liburdi Automation · Rev 4.2</span>
+<span class="kw">public class</span> <span class="ty">MotionController</span>
+{
+    <span class="kw">private readonly</span> <span class="ty">IPlcDriver</span> <span class="prop">_plc</span>;
+    <span class="kw">private readonly</span> <span class="ty">IWeldLogger</span> <span class="prop">_log</span>;
+    <span class="kw">private volatile bool</span> <span class="prop">_eStop</span> = <span class="kw">false</span>;
+
+    <span class="kw">public async</span> <span class="ty">Task</span> <span class="fn">ExecuteProgramAsync</span>(<span class="ty">WeldProgram</span> prog)
+    {
+        <span class="kw">await</span> <span class="prop">_plc</span>.<span class="fn">SetTravelSpeed</span>(prog.Parameters.TravelSpeed);
+        <span class="kw">await</span> <span class="prop">_plc</span>.<span class="fn">SetArcVoltage</span>(prog.Parameters.ArcVoltage);
+
+        <span class="kw">foreach</span> (<span class="kw">var</span> step <span class="kw">in</span> prog.Sequence)
+        {
+            <span class="kw">if</span> (<span class="prop">_eStop</span>) <span class="kw">throw new</span> <span class="ty">EStopException</span>();
+            <span class="prop">_log</span>.<span class="fn">Info</span>(<span class="str">$"Step {step.N}: {step.Description}"</span>);
+            <span class="kw">await</span> <span class="fn">RunStepAsync</span>(step);
+            <span class="kw">await</span> <span class="fn">ValidateWeldQuality</span>(step);
+        }
+    }
+
+    <span class="kw">private async</span> <span class="ty">Task</span> <span class="fn">ValidateWeldQuality</span>(<span class="ty">ProgramStep</span> step)
+    {
+        <span class="kw">var</span> r = <span class="kw">await</span> <span class="prop">_plc</span>.<span class="fn">GetSensorReading</span>();
+        <span class="kw">if</span> (r.Voltage &lt; <span class="num">11.5</span> || r.Voltage &gt; <span class="num">14.0</span>)
+            <span class="kw">throw new</span> <span class="ty">WeldFaultException</span>(<span class="str">"Arc voltage OOB"</span>, r);
+    }
+}</pre></div>
+      </div>
+    </div>
+
+    <!-- MACHINES -->
+    <div class="page" id="page-machines">
+      <div class="ph"><div class="pt">Machine Status</div><div class="ps">Real-time PLC telemetry · axis positions · OpenCV seam detection</div></div>
+      <div class="g3">
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+            <div><div style="font-weight:700;font-size:15px">LAS-7 Orbital</div><div style="font-size:12px;color:var(--text2)">Laser / GTAW · Tube &amp; Pipe</div></div>
+            <span class="chip bg" id="las7status">● Running</span>
+          </div>
+          <table>
+            <tr><td style="color:var(--text2);font-size:12px">Arc Voltage</td><td style="font-family:monospace;font-weight:600" id="m1v">12.8 V</td></tr>
+            <tr><td style="color:var(--text2);font-size:12px">Travel Speed</td><td style="font-family:monospace;font-weight:600" id="m1s">4.2 mm/s</td></tr>
+            <tr><td style="color:var(--text2);font-size:12px">Wire Feed</td><td style="font-family:monospace;font-weight:600">3.5 m/min</td></tr>
+            <tr><td style="color:var(--text2);font-size:12px">Coolant Temp</td><td style="font-family:monospace;font-weight:600" id="m1t">18.2 °C</td></tr>
+            <tr><td style="color:var(--text2);font-size:12px">Pass Count</td><td style="font-family:monospace;font-weight:600" id="m1p">203 / 247</td></tr>
+          </table>
+          <div style="margin-top:12px"><div style="font-size:11px;color:var(--text2);margin-bottom:4px">Weld Head Position</div>
+          <div style="display:flex;gap:8px;font-family:monospace;font-size:12px">
+            <span>X: <strong id="mx">148.2</strong></span><span>Y: <strong id="my">32.0</strong></span><span>Z: <strong id="mz">12.4</strong></span><span>θ: <strong id="mth">47.1°</strong></span>
+          </div></div>
+          <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap">
+            <button class="btn btn-o btn-sm" onclick="pauseMachine('LAS-7')">⏸ Pause</button>
+            <button class="btn btn-o btn-sm" onclick="homeMachine('LAS-7')">⌂ Home</button>
+          </div>
+        </div>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+            <div><div style="font-weight:700;font-size:15px">PLA-3 GTAW</div><div style="font-size:12px;color:var(--text2)">Plasma / GTAW · Sheet Metal</div></div>
+            <span class="chip bg" id="pla3status">● Running</span>
+          </div>
+          <table>
+            <tr><td style="color:var(--text2);font-size:12px">Arc Voltage</td><td style="font-family:monospace;font-weight:600" id="m2v">11.4 V</td></tr>
+            <tr><td style="color:var(--text2);font-size:12px">Travel Speed</td><td style="font-family:monospace;font-weight:600" id="m2s">6.1 mm/s</td></tr>
+            <tr><td style="color:var(--text2);font-size:12px">Wire Feed</td><td style="font-family:monospace;font-weight:600">4.2 m/min</td></tr>
+            <tr><td style="color:var(--text2);font-size:12px">Coolant Temp</td><td style="font-family:monospace;font-weight:600" id="m2t">17.8 °C</td></tr>
+            <tr><td style="color:var(--text2);font-size:12px">Pass Count</td><td style="font-family:monospace;font-weight:600" id="m2p">88 / 172</td></tr>
+          </table>
+          <div style="margin-top:12px"><div style="font-size:11px;color:var(--yellow);margin-bottom:4px">⚠ Active Fault: F-0041</div>
+          <div style="font-size:12px;color:var(--yellow)" id="pla3fault">Wire tension 3.1 N — threshold 2.8 N</div></div>
+          <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap">
+            <button class="btn btn-o btn-sm" onclick="pauseMachine('PLA-3')">⏸ Pause</button>
+            <button class="btn btn-o btn-sm" onclick="homeMachine('PLA-3')">⌂ Home</button>
+          </div>
+        </div>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+            <div><div style="font-weight:700;font-size:15px">ARC-5 Gantry</div><div style="font-size:12px;color:var(--text2)">Robotic Arm · 6-Axis Gantry</div></div>
+            <span class="chip by" id="arc5status">⚙ Maintenance</span>
+          </div>
+          <table>
+            <tr><td style="color:var(--text2);font-size:12px">Status</td><td style="font-family:monospace;font-weight:600;color:var(--yellow)" id="arc5stat">Offline</td></tr>
+            <tr><td style="color:var(--text2);font-size:12px">Last Job</td><td style="font-family:monospace;font-weight:600">WP-2846</td></tr>
+            <tr><td style="color:var(--text2);font-size:12px">Total Passes</td><td style="font-family:monospace;font-weight:600">14,802</td></tr>
+            <tr><td style="color:var(--text2);font-size:12px">Next PM</td><td style="font-family:monospace;font-weight:600">Oct 22</td></tr>
+            <tr><td style="color:var(--text2);font-size:12px">OpenCV</td><td style="font-family:monospace;font-weight:600">Emgu 4.8.1</td></tr>
+          </table>
+          <div style="margin-top:12px"><div style="font-size:11px;color:var(--text2);margin-bottom:4px">Gantry Calibration Progress</div>
+          <div class="pbw"><div class="pb" id="calBar" style="width:64%;background:var(--yellow)"></div></div>
+          <div style="font-size:11px;color:var(--text2);margin-top:4px" id="calPct">64% — ETA ~45 min</div></div>
+          <button class="btn btn-o btn-sm" id="bringOnlineBtn" style="margin-top:10px;width:100%" onclick="bringOnline()">Bring Online</button>
+        </div>
+      </div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div class="ctitle" style="margin-bottom:0">OpenGL Weld Path Preview — ARC-5 Gantry</div>
+          <button class="btn btn-o btn-sm" onclick="animatePath()">▶ Animate Path</button>
+        </div>
+        <canvas id="geomCanvas" style="width:100%;height:200px;max-width:100%;border-radius:6px;background:#0d1117"></canvas>
+      </div>
+    </div>
+
+    <!-- DIAGNOSTICS -->
+    <div class="page" id="page-diagnostics">
+      <div class="ph"><div class="pt">Diagnostics &amp; Fault Log</div><div class="ps">Real-time sensor alerts · ISO 9001 audit trail · multi-threaded event queue</div></div>
+      <div class="alert aw" id="diagAlert" style="display:flex">⚠️ &nbsp;<div>2 active faults require attention. PLA-3 wire tension exceeds tolerance.</div></div>
+      <div class="g2">
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <div class="ctitle" style="margin-bottom:0">Active Faults</div>
+            <button class="btn btn-o btn-sm" onclick="addTestFault()">＋ Simulate Fault</button>
+          </div>
+          <table>
+            <thead><tr><th>Code</th><th>Machine</th><th>Description</th><th>Sev</th><th></th></tr></thead>
+            <tbody id="faultTable">
+              <tr id="f0041"><td><span style="font-family:monospace">F-0041</span></td><td>PLA-3</td><td>Wire feed tension 3.1 N</td><td><span class="chip by">Warn</span></td><td><button class="btn btn-sm btn-o" onclick="clearFault(this,'F-0041')">Clear</button></td></tr>
+              <tr id="f0038"><td><span style="font-family:monospace">F-0038</span></td><td>PLA-3</td><td>Shield gas ±5% deviation</td><td><span class="chip by">Warn</span></td><td><button class="btn btn-sm btn-o" onclick="clearFault(this,'F-0038')">Clear</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="ctitle">Sensor Readings — PLA-3 (Wire Tension)</div>
+          <canvas id="sensorChart" style="width:100%;height:160px;max-width:100%"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div class="ctitle" style="margin-bottom:0">System Event Log</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-o btn-sm" id="logPauseBtn" onclick="toggleLogPause()">⏸ Pause</button>
+            <button class="btn btn-o btn-sm" onclick="clearLog()">🗑 Clear</button>
+          </div>
+        </div>
+        <div class="lw" id="logWrap"></div>
+      </div>
+    </div>
+
+    <!-- CUSTOMERS -->
+    <div class="page" id="page-customers">
+      <div class="ph"><div class="pt">Customer Projects</div><div class="ps">Requirements, specs, training records, and support tickets</div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div style="font-weight:600;font-size:14px">All Customers</div>
+        <button class="btn btn-p btn-sm" onclick="openNewTicket()">＋ New Ticket</button>
+      </div>
+      <div class="card" style="margin-bottom:16px">
+        <table>
+          <thead><tr><th>Customer</th><th>Industry</th><th>Program</th><th>Tier</th><th>Last Contact</th><th>Status</th><th></th></tr></thead>
+          <tbody>
+            <tr><td><strong>Rolls-Royce Canada</strong></td><td>Aerospace</td><td>WP-2847</td><td>Platinum</td><td>Oct 14</td><td><span class="chip bg">Active</span></td><td><button class="btn btn-o btn-sm" onclick="contactCustomer('Rolls-Royce Canada')">Contact</button></td></tr>
+            <tr><td><strong>Bruce Power</strong></td><td>Nuclear / Energy</td><td>WP-2848</td><td>Gold</td><td>Oct 12</td><td><span class="chip bg">Active</span></td><td><button class="btn btn-o btn-sm" onclick="contactCustomer('Bruce Power')">Contact</button></td></tr>
+            <tr><td><strong>Stryker Medical</strong></td><td>Medical Devices</td><td>WP-2849</td><td>Gold</td><td>Oct 10</td><td><span class="chip by">Queued</span></td><td><button class="btn btn-o btn-sm" onclick="contactCustomer('Stryker Medical')">Contact</button></td></tr>
+            <tr><td><strong>TransCanada Pipeline</strong></td><td>Oil &amp; Gas</td><td>WP-2844</td><td>Standard</td><td>Sep 30</td><td><span class="chip bb">Support</span></td><td><button class="btn btn-o btn-sm" onclick="contactCustomer('TransCanada Pipeline')">Contact</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="g2">
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <div class="ctitle" style="margin-bottom:0">Open Tickets</div>
+          </div>
+          <div class="tl" id="ticketList">
+            <div class="tli" id="ticket1">
+              <div class="tld tdy"></div>
+              <div style="flex:1"><div class="tlx">Bruce Power — Shield gas calibration query</div><div class="tls">Opened Oct 13 · Assigned: J. Parekh</div></div>
+              <button class="btn btn-sm btn-o" onclick="resolveTicket('ticket1','Bruce Power')">Resolve</button>
+            </div>
+            <div class="tli" id="ticket2">
+              <div class="tld tdg"></div>
+              <div style="flex:1"><div class="tlx">TransCanada — WP-2844 training session</div><div class="tls">Scheduled Oct 18 · 10:00 AM EST</div></div>
+              <button class="btn btn-sm btn-o" onclick="resolveTicket('ticket2','TransCanada')">Complete</button>
+            </div>
+          </div>
+          <div id="noTickets" hidden style="font-size:13px;color:var(--text3);text-align:center;padding:16px">All tickets resolved ✓</div>
+        </div>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <div class="ctitle" style="margin-bottom:0">Training Records</div>
+            <button class="btn btn-o btn-sm" onclick="addTrainingRecord()">＋ Log Training</button>
+          </div>
+          <div class="tl" id="trainingList">
+            <div class="tli"><div class="tld tdg"></div><div><div class="tlx">Rolls-Royce — WeldControl v4 operator training</div><div class="tls">Completed Oct 2 · 4 operators certified</div></div></div>
+            <div class="tli"><div class="tld tdg"></div><div><div class="tlx">Stryker Medical — ISO 9001 process review</div><div class="tls">Completed Sep 28 · Documentation signed off</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REPORTS -->
+    <div class="page" id="page-reports">
+      <div class="ph"><div class="pt">Reports &amp; Analytics</div><div class="ps">Weekly pass rates · machine utilization · ISO 9001 audit exports</div></div>
+      <div class="tab-btns">
+        <button class="tab-btn active" onclick="switchTab('summary',this)">Summary</button>
+        <button class="tab-btn" onclick="switchTab('utilization',this)">Utilization</button>
+        <button class="tab-btn" onclick="switchTab('iso',this)">ISO 9001 Audit</button>
+      </div>
+      <div class="tab-pane active" id="tab-summary">
+        <div class="g4">
+          <div class="card"><div class="ctitle">Pass Rate (30d)</div><div class="sval">98.1%</div><div class="sbadge bg">▲ +0.4%</div></div>
+          <div class="card"><div class="ctitle">Arc Time (30d)</div><div class="sval">182h</div><div class="sbadge bg">▲ +12h</div></div>
+          <div class="card"><div class="ctitle">Faults Cleared</div><div class="sval">41</div><div class="sbadge bb">Avg 1.8h MTTR</div></div>
+          <div class="card"><div class="ctitle">Programs Shipped</div><div class="sval">14</div><div class="sbadge bg">On schedule</div></div>
+        </div>
+        <div class="card">
+          <div class="ctitle">Weekly Pass Rate — LAS-7 (12 weeks)</div>
+          <canvas id="passChart" style="width:100%;height:150px;max-width:100%"></canvas>
+        </div>
+      </div>
+      <div class="tab-pane" id="tab-utilization">
+        <div class="card">
+          <div class="ctitle">Machine Utilization — Arc Time (hours / week)</div>
+          <canvas id="utilChart" style="width:100%;height:180px;max-width:100%"></canvas>
+        </div>
+        <div class="g3" style="margin-top:16px">
+          <div class="card"><div class="ctitle">LAS-7</div><div class="sval">91%</div><div class="slbl">Utilization</div><div class="pbw" style="margin-top:8px"><div class="pb" style="width:91%;background:var(--green)"></div></div></div>
+          <div class="card"><div class="ctitle">PLA-3</div><div class="sval">78%</div><div class="slbl">Utilization</div><div class="pbw" style="margin-top:8px"><div class="pb" style="width:78%;background:var(--blue)"></div></div></div>
+          <div class="card"><div class="ctitle">ARC-5</div><div class="sval">34%</div><div class="slbl">Utilization (maint)</div><div class="pbw" style="margin-top:8px"><div class="pb" style="width:34%;background:var(--yellow)"></div></div></div>
+        </div>
+      </div>
+      <div class="tab-pane" id="tab-iso">
+        <div class="card">
+          <div class="ctitle">ISO 9001:2015 Audit Checklist</div>
+          <div style="margin-top:12px">
+            <table>
+              <thead><tr><th>Clause</th><th>Requirement</th><th>Status</th><th>Evidence</th></tr></thead>
+              <tbody id="isoTable">
+                <tr><td>7.1.5</td><td>Monitoring &amp; measurement resources calibrated</td><td><span class="chip bg">Pass</span></td><td>Cal records Oct 1</td></tr>
+                <tr><td>8.5.1</td><td>Production controls documented</td><td><span class="chip bg">Pass</span></td><td>WP-2847 rev 3</td></tr>
+                <tr><td>8.5.2</td><td>Identification &amp; traceability maintained</td><td><span class="chip bg">Pass</span></td><td>Serial trace log</td></tr>
+                <tr><td>8.6</td><td>Release of products &amp; services verified</td><td><span class="chip bg">Pass</span></td><td>QC sign-off Oct 10</td></tr>
+                <tr><td>8.7</td><td>Nonconforming outputs controlled</td><td><span class="chip by" id="isoRow8_7">Review</span></td><td>F-0041 open</td></tr>
+                <tr><td>10.2</td><td>Corrective action documented</td><td><span class="chip bg">Pass</span></td><td>CAR-2026-14</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+        <button class="btn btn-p" onclick="exportISO()">📄 Export ISO 9001 Report</button>
+        <button class="btn btn-o" onclick="exportCSV()">📊 Export CSV</button>
+        <button class="btn btn-o" onclick="exportXML()">🗜 Archive Programs</button>
+        <button class="btn btn-o" onclick="printReport()">🖨 Print View</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: New Program -->
+<div class="modal-bg" id="newProgModal" hidden>
+  <div class="modal">
+    <h3>New Weld Program</h3>
+    <div class="g2" style="gap:12px">
+      <div class="fg"><div class="fl">Program ID</div><input class="fi" id="npId" placeholder="WP-2850"/></div>
+      <div class="fg"><div class="fl">Part Name</div><input class="fi" id="npPart" placeholder="Component name"/></div>
+      <div class="fg"><div class="fl">Customer</div><select class="fi" id="npCustomer"><option>Rolls-Royce Canada</option><option>Bruce Power</option><option>Stryker Medical</option><option>TransCanada Pipeline</option><option>Other</option></select></div>
+      <div class="fg"><div class="fl">Process</div><select class="fi" id="npProcess"><option>GTAW (TIG)</option><option>Laser Powder</option><option>Plasma</option><option>Orbital</option></select></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-o" onclick="closeModal('newProgModal')">Cancel</button>
+      <button class="btn btn-p" onclick="createProgram()">Create Program</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: New Ticket -->
+<div class="modal-bg" id="newTicketModal" hidden>
+  <div class="modal">
+    <h3>New Support Ticket</h3>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="fg"><div class="fl">Customer</div><select class="fi" id="tkCustomer"><option>Rolls-Royce Canada</option><option>Bruce Power</option><option>Stryker Medical</option><option>TransCanada Pipeline</option></select></div>
+      <div class="fg"><div class="fl">Issue Description</div><textarea class="fi" id="tkDesc" rows="3" placeholder="Describe the customer issue..." style="resize:vertical;font-family:inherit"></textarea></div>
+      <div class="fg"><div class="fl">Priority</div><select class="fi" id="tkPriority"><option>Normal</option><option>High</option><option>Critical</option></select></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-o" onclick="closeModal('newTicketModal')">Cancel</button>
+      <button class="btn btn-p" onclick="createTicket()">Open Ticket</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Contact -->
+<div class="modal-bg" id="contactModal" hidden>
+  <div class="modal">
+    <h3 id="contactTitle">Contact Customer</h3>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="fg"><div class="fl">Subject</div><input class="fi" id="ctSubject" value="WeldControl Studio — Program Update"/></div>
+      <div class="fg"><div class="fl">Message</div><textarea class="fi" id="ctMsg" rows="4" style="resize:vertical;font-family:inherit">Hello, please find the updated weld program parameters attached. Let us know if you have any questions.</textarea></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-o" onclick="closeModal('contactModal')">Cancel</button>
+      <button class="btn btn-p" onclick="sendContact()">Send Message</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Training Log -->
+<div class="modal-bg" id="trainingModal" hidden>
+  <div class="modal">
+    <h3>Log Training Session</h3>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="fg"><div class="fl">Customer</div><select class="fi" id="trCustomer"><option>Rolls-Royce Canada</option><option>Bruce Power</option><option>Stryker Medical</option><option>TransCanada Pipeline</option></select></div>
+      <div class="fg"><div class="fl">Training Type</div><select class="fi" id="trType"><option>Operator Certification</option><option>ISO 9001 Process Review</option><option>Software Update Walkthrough</option><option>Safety Training</option></select></div>
+      <div class="fg"><div class="fl">Operators Certified</div><input class="fi" id="trCount" type="number" value="2" min="1"/></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-o" onclick="closeModal('trainingModal')">Cancel</button>
+      <button class="btn btn-p" onclick="logTraining()">Log Session</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── STATE ───────────────────────────────────────────────
+const DEFAULTS = {
+  'WP-2847': { title:'WP-2847 — Turbine Blade Repair (Aerospace)', process:'GTAW (TIG)', speed:4.2, volt:12.8, wire:3.5, gas:18.0, preheat:150, osc:2.4, angle:15, material:'IN718 Nickel Superalloy' },
+  'WP-2848': { title:'WP-2848 — Pipe Manifold (Power Gen)', process:'Orbital', speed:6.1, volt:11.4, wire:4.2, gas:22.0, preheat:80, osc:1.8, angle:10, material:'316L Stainless Steel' },
+  'WP-2849': { title:'WP-2849 — Surgical Housing (Medical)', process:'Laser Powder', speed:2.8, volt:13.2, wire:2.1, gas:15.0, preheat:25, osc:0.8, angle:5, material:'Ti-6Al-4V Titanium' },
+};
+let activeProg = 'WP-2847';
+let faultCount = 2;
+let logPaused = false;
+let calPct = 64;
+let calDone = false;
+let logInterval, calInterval, liveInterval;
+let pathAnimFrame = null, pathT = 0;
+
+const LOGMESSAGES = [
+  ['ok','OpenCV seam detection: deviation 0.06mm (pass)'],
+  ['ok','Weld quality check passed'],
+  ['info','PLC heartbeat — all axes nominal'],
+  ['warn','Wire tension fluctuation detected on PLA-3'],
+  ['ok','LAS-7 pass completed — arc stable'],
+  ['info','Temperature nominal — coolant 18.1°C'],
+  ['ok','Shield gas flow verified — 18.0 L/min'],
+  ['info','Multi-thread queue: 0 pending events'],
+];
+
+// ── THEME ───────────────────────────────────────────────
+function toggleTheme() {
+  const r = document.documentElement;
+  r.setAttribute('data-theme', r.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  drawAll();
+}
+
+// ── NAVIGATION ──────────────────────────────────────────
+function goPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.querySelectorAll('.tnav button').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  else {
+    const btns = document.querySelectorAll('.tnav button');
+    const names = ['dashboard','programs','machines','diagnostics','customers','reports'];
+    const i = names.indexOf(id);
+    if (i >= 0) btns[i].classList.add('active');
+  }
+  // update sidebar
+  document.querySelectorAll('.sb-item').forEach(s => s.classList.remove('active'));
+  const sbId = 'sb-' + id;
+  const sbEl = document.getElementById(sbId);
+  if (sbEl) sbEl.classList.add('active');
+  setTimeout(drawAll, 50);
+}
+
+// ── PROGRAMS PAGE ───────────────────────────────────────
+function loadProgram(id) {
+  if (!DEFAULTS[id]) return;
+  activeProg = id;
+  const d = DEFAULTS[id];
+  document.getElementById('progSelect').value = id;
+  document.getElementById('progTitle').textContent = d.title;
+  document.getElementById('pProcess').value = d.process;
+  document.getElementById('pSpeed').value = d.speed;
+  document.getElementById('pVolt').value = d.volt;
+  document.getElementById('pWire').value = d.wire;
+  document.getElementById('pGas').value = d.gas;
+  document.getElementById('pPreheat').value = d.preheat;
+  document.getElementById('pOsc').value = d.osc;
+  document.getElementById('pAngle').value = d.angle;
+  document.getElementById('speedVal').textContent = d.speed + ' mm/s';
+  document.getElementById('voltVal').textContent = d.volt.toFixed(1) + ' V';
+  document.getElementById('xmlTitle').textContent = id + '.xml';
+  document.getElementById('saveFile').textContent = id + '.xml';
+  renderXml(id, d);
+  goPage('programs', null);
+  hideMessages();
+}
+
+function renderXml(id, d) {
+  document.getElementById('xmlPre').innerHTML =
+`<span class="cm">&lt;!-- Liburdi WeldControl v4.2 --&gt;</span>
+<span class="ty">&lt;WeldProgram</span> <span class="prop">id</span>=<span class="str">"${id}"</span> <span class="prop">rev</span>=<span class="str">"3"</span><span class="ty">&gt;</span>
+  <span class="ty">&lt;Header&gt;</span>
+    <span class="ty">&lt;Part&gt;</span>${d.material}<span class="ty">&lt;/Part&gt;</span>
+    <span class="ty">&lt;Process&gt;</span>${d.process}<span class="ty">&lt;/Process&gt;</span>
+    <span class="ty">&lt;ISOCert&gt;</span>ISO 9001:2015<span class="ty">&lt;/ISOCert&gt;</span>
+  <span class="ty">&lt;/Header&gt;</span>
+  <span class="ty">&lt;Parameters&gt;</span>
+    <span class="ty">&lt;TravelSpeed <span class="prop">unit</span>=<span class="str">"mm/s"</span>&gt;</span>${d.speed}<span class="ty">&lt;/TravelSpeed&gt;</span>
+    <span class="ty">&lt;ArcVoltage <span class="prop">unit</span>=<span class="str">"V"</span>&gt;</span>${d.volt}<span class="ty">&lt;/ArcVoltage&gt;</span>
+    <span class="ty">&lt;WireFeed <span class="prop">unit</span>=<span class="str">"m/min"</span>&gt;</span>${d.wire}<span class="ty">&lt;/WireFeed&gt;</span>
+    <span class="ty">&lt;ShieldGas <span class="prop">unit</span>=<span class="str">"L/min"</span>&gt;</span>${d.gas}<span class="ty">&lt;/ShieldGas&gt;</span>
+    <span class="ty">&lt;PreheatTemp <span class="prop">unit</span>=<span class="str">"C"</span>&gt;</span>${d.preheat}<span class="ty">&lt;/PreheatTemp&gt;</span>
+    <span class="ty">&lt;TorchAngle <span class="prop">unit</span>=<span class="str">"deg"</span>&gt;</span>${d.angle}<span class="ty">&lt;/TorchAngle&gt;</span>
+  <span class="ty">&lt;/Parameters&gt;</span>
+  <span class="ty">&lt;Sequence&gt;</span>
+    <span class="ty">&lt;Step <span class="prop">n</span>=<span class="str">"1"</span>&gt;</span>Arc Strike → Ramp 2.5s<span class="ty">&lt;/Step&gt;</span>
+    <span class="ty">&lt;Step <span class="prop">n</span>=<span class="str">"2"</span>&gt;</span>Linear pass<span class="ty">&lt;/Step&gt;</span>
+    <span class="ty">&lt;Step <span class="prop">n</span>=<span class="str">"3"</span>&gt;</span>Arc Decay → Cool 8s<span class="ty">&lt;/Step&gt;</span>
+  <span class="ty">&lt;/Sequence&gt;</span>
+<span class="ty">&lt;/WeldProgram&gt;</span>`;
+}
+
+function hideMessages() {
+  ['save-msg','val-msg','val-err'].forEach(id => { const el = document.getElementById(id); if (el) el.hidden = true; });
+}
+
+function updateLive() {
+  const v = parseFloat(document.getElementById('pSpeed').value) || 0;
+  const volt = parseFloat(document.getElementById('pVolt').value) || 0;
+  document.getElementById('speedVal').textContent = v.toFixed(1) + ' mm/s';
+  document.getElementById('voltVal').textContent = volt.toFixed(1) + ' V';
+}
+
+function saveParams() {
+  hideMessages();
+  const d = DEFAULTS[activeProg];
+  d.speed = parseFloat(document.getElementById('pSpeed').value);
+  d.volt = parseFloat(document.getElementById('pVolt').value);
+  d.wire = parseFloat(document.getElementById('pWire').value);
+  d.gas = parseFloat(document.getElementById('pGas').value);
+  d.preheat = parseInt(document.getElementById('pPreheat').value);
+  d.osc = parseFloat(document.getElementById('pOsc').value);
+  d.angle = parseInt(document.getElementById('pAngle').value);
+  d.process = document.getElementById('pProcess').value;
+  renderXml(activeProg, d);
+  document.getElementById('save-msg').hidden = false;
+  addLog('ok', `${activeProg}.xml saved — rev updated`);
+  toast('✓ Parameters saved to ' + activeProg + '.xml', 'green');
+}
+
+function resetParams() {
+  loadProgram(activeProg);
+  hideMessages();
+  toast('↩ Parameters reset to saved values', '');
+}
+
+function validateParams() {
+  hideMessages();
+  const volt = parseFloat(document.getElementById('pVolt').value);
+  if (volt < 11.5 || volt > 14.0) {
+    document.getElementById('val-err').hidden = false;
+  } else {
+    document.getElementById('val-msg').hidden = false;
+    toast('✓ Validated against ISO 9001 tolerances', 'green');
+  }
+}
+
+function openNewProgModal() { document.getElementById('newProgModal').hidden = false; }
+function closeModal(id) { document.getElementById(id).hidden = true; }
+
+function createProgram() {
+  const id = document.getElementById('npId').value.trim() || 'WP-2850';
+  const part = document.getElementById('npPart').value.trim() || 'New Part';
+  const process = document.getElementById('npProcess').value;
+  const customer = document.getElementById('npCustomer').value;
+  DEFAULTS[id] = { title:`${id} — ${part} (${customer.split(' ')[0]})`, process, speed:4.0, volt:12.5, wire:3.5, gas:18.0, preheat:100, osc:2.0, angle:12, material:part };
+  const sel = document.getElementById('progSelect');
+  const opt = document.createElement('option'); opt.value = id; opt.textContent = DEFAULTS[id].title;
+  sel.appendChild(opt);
+  closeModal('newProgModal');
+  loadProgram(id);
+  addLog('ok', `New program ${id} created — ${part}`);
+  toast('✓ Program ' + id + ' created', 'green');
+}
+
+function duplicateProg() {
+  const src = DEFAULTS[activeProg];
+  const newId = activeProg.replace(/(\d+)/, m => String(parseInt(m)+1));
+  DEFAULTS[newId] = { ...src, title: src.title.replace(activeProg, newId) };
+  const sel = document.getElementById('progSelect');
+  const opt = document.createElement('option'); opt.value = newId; opt.textContent = DEFAULTS[newId].title;
+  sel.appendChild(opt);
+  loadProgram(newId);
+  toast('⎘ Duplicated as ' + newId, '');
+}
+
+// ── JOG / ESTOP ─────────────────────────────────────────
+let isEstopped = false;
+function jogOverride() {
+  const sEl = document.getElementById('speedVal');
+  const cur = parseFloat(sEl.textContent);
+  sEl.textContent = (cur * 0.5).toFixed(1) + ' mm/s';
+  sEl.style.color = 'var(--yellow)';
+  addLog('warn', 'Jog override: speed reduced to 50%');
+  toast('⟳ Jog mode: speed at 50%', 'yellow');
+  setTimeout(() => { sEl.textContent = cur.toFixed(1) + ' mm/s'; sEl.style.color = ''; }, 2500);
+}
+
+function eStop() {
+  isEstopped = !isEstopped;
+  const pill = document.getElementById('plcPill');
+  const btn = document.getElementById('estopBtn');
+  const status = document.getElementById('runStatus');
+  if (isEstopped) {
+    pill.style.background = 'rgba(231,76,60,.2)'; pill.style.color = 'var(--accent2)';
+    document.getElementById('plcTxt').textContent = 'E-STOP';
+    btn.textContent = '▶ Resume'; btn.style.background = 'var(--green)';
+    status.textContent = '⏹ Stopped'; status.className = 'chip br';
+    addLog('err', 'EMERGENCY STOP triggered — all axes halted');
+    toast('⬛ E-STOP activated', 'red');
+  } else {
+    pill.style.background = ''; pill.style.color = '';
+    document.getElementById('plcTxt').textContent = 'PLC Connected';
+    btn.textContent = '⬛ E-STOP'; btn.style.background = '#c0392b';
+    status.textContent = '● Running'; status.className = 'chip bg';
+    addLog('ok', 'System resumed — axes re-enabled');
+    toast('▶ System resumed', 'green');
+  }
+}
+
+// ── MACHINES PAGE ────────────────────────────────────────
+function pauseMachine(name) {
+  addLog('warn', name + ' paused by operator');
+  toast('⏸ ' + name + ' paused', 'yellow');
+}
+function homeMachine(name) {
+  addLog('info', name + ' homing sequence initiated');
+  toast('⌂ ' + name + ' moving to home position', '');
+}
+
+let calRunning = false;
+function bringOnline() {
+  if (!calDone) {
+    toast('⚠ Calibration must complete before bringing ARC-5 online', 'yellow');
+    return;
+  }
+  document.getElementById('arc5status').textContent = '● Running';
+  document.getElementById('arc5status').className = 'chip bg';
+  document.getElementById('arc5stat').textContent = 'Online';
+  document.getElementById('arc5stat').style.color = 'var(--green)';
+  document.getElementById('bringOnlineBtn').textContent = 'Take Offline';
+  document.getElementById('bringOnlineBtn').onclick = takeOffline;
+  document.getElementById('activeMachines').textContent = '3 / 3';
+  document.getElementById('las7badge').parentElement.querySelector('.sb-badge')?.remove?.();
+  addLog('ok', 'ARC-5 Gantry brought online — calibration complete');
+  toast('✓ ARC-5 now online', 'green');
+}
+function takeOffline() {
+  document.getElementById('arc5status').textContent = '⚙ Offline';
+  document.getElementById('arc5status').className = 'chip by';
+  document.getElementById('arc5stat').textContent = 'Offline';
+  document.getElementById('arc5stat').style.color = '';
+  document.getElementById('bringOnlineBtn').textContent = 'Bring Online';
+  document.getElementById('bringOnlineBtn').onclick = bringOnline;
+  document.getElementById('activeMachines').textContent = '2 / 3';
+  addLog('warn', 'ARC-5 taken offline by operator');
+  toast('ARC-5 offline', '');
+}
+
+let pathAnimating = false;
+function animatePath() {
+  if (pathAnimating) { pathAnimating = false; return; }
+  pathAnimating = true;
+  pathT = 0;
+  function frame() {
+    if (!pathAnimating) return;
+    pathT = Math.min(pathT + 0.015, 1);
+    drawGeom(document.getElementById('geomCanvas'), pathT);
+    if (pathT < 1) requestAnimationFrame(frame);
+    else { pathAnimating = false; }
+  }
+  requestAnimationFrame(frame);
+}
+
+// ── DIAGNOSTICS PAGE ─────────────────────────────────────
+let faultN = 42;
+function clearFault(btn, code) {
+  const row = btn.closest('tr');
+  row.style.opacity = '0'; row.style.transition = 'opacity .4s';
+  faultCount = Math.max(0, faultCount - 1);
+  updateFaultCount();
+  addLog('ok', 'Fault ' + code + ' cleared by operator');
+  toast('✓ Fault ' + code + ' cleared', 'green');
+  setTimeout(() => row.remove(), 400);
+}
+function addTestFault() {
+  faultN++;
+  const code = 'F-0' + faultN;
+  const msgs = ['Coolant temp high (22.1°C)','Gas flow low (15.2 L/min)','Wire spool near empty','Voltage spike detected'];
+  const msg = msgs[faultN % msgs.length];
+  const tbody = document.getElementById('faultTable');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td><span style="font-family:monospace">${code}</span></td><td>LAS-7</td><td>${msg}</td><td><span class="chip by">Warn</span></td><td><button class="btn btn-sm btn-o" onclick="clearFault(this,'${code}')">Clear</button></td>`;
+  tbody.appendChild(tr);
+  faultCount++;
+  updateFaultCount();
+  addLog('warn', code + ' raised: ' + msg);
+  toast('⚠ New fault: ' + code, 'yellow');
+}
+function updateFaultCount() {
+  document.getElementById('faultBadge').textContent = faultCount;
+  document.getElementById('dashFaults').textContent = faultCount;
+  if (faultCount === 0) {
+    document.getElementById('diagAlert').style.display = 'none';
+    document.getElementById('dashFaultBadge').textContent = '✓ Clear';
+    document.getElementById('dashFaultBadge').className = 'sbadge bg';
+  }
+}
+
+// ── LOG ──────────────────────────────────────────────────
+function addLog(type, msg) {
+  if (logPaused) return;
+  const wrap = document.getElementById('logWrap');
+  if (!wrap) return;
+  const d = new Date(); const ts = d.toTimeString().slice(0,8);
+  const cls = {ok:'lok',warn:'lwn',err:'ler',info:'lin'}[type] || 'lin';
+  const tag = {ok:'[OK]',warn:'[WARN]',err:'[ERR]',info:'[INFO]'}[type] || '[INFO]';
+  const div = document.createElement('div'); div.className = 'll';
+  div.innerHTML = `<span class="lts">${ts}</span><span class="${cls}">${tag}</span><span>${msg}</span>`;
+  wrap.prepend(div);
+  if (wrap.children.length > 60) wrap.lastChild.remove();
+}
+function toggleLogPause() {
+  logPaused = !logPaused;
+  document.getElementById('logPauseBtn').textContent = logPaused ? '▶ Resume' : '⏸ Pause';
+  toast(logPaused ? '⏸ Log paused' : '▶ Log streaming', '');
+}
+function clearLog() {
+  document.getElementById('logWrap').innerHTML = '';
+  addLog('info', 'Log cleared by operator');
+  toast('🗑 Log cleared', '');
+}
+
+// ── CUSTOMERS PAGE ──────────────────────────────────────
+function contactCustomer(name) {
+  document.getElementById('contactTitle').textContent = 'Contact: ' + name;
+  document.getElementById('ctSubject').value = 'WeldControl Studio — Program Update for ' + name;
+  document.getElementById('contactModal').hidden = false;
+}
+function sendContact() {
+  const name = document.getElementById('contactTitle').textContent.replace('Contact: ', '');
+  closeModal('contactModal');
+  addLog('ok', 'Message sent to ' + name);
+  toast('✉ Message sent to ' + name, 'green');
+}
+function resolveTicket(id, name) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.opacity = '0'; el.style.transition = 'opacity .4s';
+  setTimeout(() => {
+    el.remove();
+    const list = document.getElementById('ticketList');
+    if (list.children.length === 0) document.getElementById('noTickets').hidden = false;
+  }, 400);
+  addLog('ok', 'Ticket resolved: ' + name);
+  toast('✓ Ticket resolved — ' + name, 'green');
+}
+function openNewTicket() { document.getElementById('newTicketModal').hidden = false; }
+function createTicket() {
+  const cust = document.getElementById('tkCustomer').value;
+  const desc = document.getElementById('tkDesc').value.trim() || 'Issue reported';
+  const priority = document.getElementById('tkPriority').value;
+  const list = document.getElementById('ticketList');
+  document.getElementById('noTickets').hidden = true;
+  const id = 'ticket' + Date.now();
+  const div = document.createElement('div'); div.className = 'tli'; div.id = id;
+  const dot = priority === 'Critical' ? 'tdr' : priority === 'High' ? 'tdy' : 'tdg';
+  div.innerHTML = `<div class="tld ${dot}"></div><div style="flex:1"><div class="tlx">${cust} — ${desc}</div><div class="tls">Opened now · Priority: ${priority}</div></div><button class="btn btn-sm btn-o" onclick="resolveTicket('${id}','${cust}')">Resolve</button>`;
+  list.insertBefore(div, list.firstChild);
+  closeModal('newTicketModal');
+  addLog('info', 'New ticket opened: ' + cust + ' — ' + desc);
+  toast('✓ Ticket opened for ' + cust, 'green');
+}
+function addTrainingRecord() { document.getElementById('trainingModal').hidden = false; }
+function logTraining() {
+  const cust = document.getElementById('trCustomer').value;
+  const type = document.getElementById('trType').value;
+  const count = document.getElementById('trCount').value;
+  const list = document.getElementById('trainingList');
+  const now = new Date(); const dateStr = now.toLocaleDateString('en-CA',{month:'short',day:'numeric'});
+  const div = document.createElement('div'); div.className = 'tli';
+  div.innerHTML = `<div class="tld tdg"></div><div><div class="tlx">${cust} — ${type}</div><div class="tls">Completed ${dateStr} · ${count} operator(s) certified</div></div>`;
+  list.insertBefore(div, list.firstChild);
+  closeModal('trainingModal');
+  addLog('ok', 'Training logged: ' + cust + ' — ' + type);
+  toast('✓ Training record logged', 'green');
+}
+
+// ── REPORTS PAGE ────────────────────────────────────────
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  setTimeout(drawAll, 50);
+}
+let _dl = null;
+async function getDL() {
+  if (_dl) return _dl;
+  _dl = await claude.use('downloads');
+  return _dl;
+}
+async function downloadFile(name, content, mime) {
+  const dl = await getDL();
+  if (!dl) { toast('⚠ Download not available in this viewer', 'yellow'); return; }
+  const enc = new TextEncoder().encode(content);
+  await dl.save({ filename: name, data: enc.buffer });
+}
+async function exportISO() {
+  const now = new Date().toISOString().slice(0,10);
+  const content = `ISO 9001:2015 AUDIT REPORT — Liburdi Automation
+Generated: ${now}  Operator: J. Parekh
+${'='.repeat(60)}
+
+CLAUSE 7.1.5  Monitoring & Measurement Resources
+Status: PASS   Evidence: Calibration records Oct 1 2026
+
+CLAUSE 8.5.1  Production Controls Documented
+Status: PASS   Evidence: WP-2847 rev 3, WP-2848 rev 2
+
+CLAUSE 8.5.2  Identification & Traceability
+Status: PASS   Evidence: Serial trace log — all parts tagged
+
+CLAUSE 8.6    Release of Products & Services
+Status: PASS   Evidence: QC sign-off Oct 10 2026
+
+CLAUSE 8.7    Nonconforming Outputs Controlled
+Status: REVIEW Evidence: F-0041 open (wire tension PLA-3)
+               Corrective action: CAR-2026-14 in progress
+
+CLAUSE 10.2   Corrective Action Documented
+Status: PASS   Evidence: CAR-2026-14 dated Oct 13 2026
+
+${'='.repeat(60)}
+Overall: 5/6 PASS, 1 REVIEW
+Signed: WeldControl Studio v4.2 — Liburdi Automation Hamilton ON
+`;
+  downloadFile('ISO_9001_Audit_' + now + '.txt', content, 'text/plain');
+  addLog('ok', 'ISO 9001 audit report exported to file');
+  toast('📄 ISO 9001 report downloaded', 'green');
+}
+async function exportCSV() {
+  const rows = [
+    ['Timestamp','Program','Machine','Pass','ArcVoltage_V','TravelSpeed_mm_s','WireFeed_m_min','ShieldGas_L_min','Result'],
+    ['2026-10-15 09:14:02','WP-2847','LAS-7','203','12.8','4.2','3.5','18.0','PASS'],
+    ['2026-10-15 09:12:44','WP-2847','LAS-7','202','12.7','4.2','3.5','18.0','PASS'],
+    ['2026-10-15 09:11:10','WP-2847','LAS-7','201','12.9','4.1','3.5','17.9','PASS'],
+    ['2026-10-15 08:55:30','WP-2848','PLA-3','88','11.4','6.1','4.2','22.0','PASS'],
+    ['2026-10-15 08:53:12','WP-2848','PLA-3','87','11.5','6.0','4.2','21.8','PASS'],
+    ['2026-10-15 08:50:01','WP-2847','LAS-7','200','13.1','4.3','3.6','18.1','PASS'],
+    ['2026-10-15 07:20:15','WP-2847','LAS-7','199','11.2','4.2','3.5','18.0','FAIL'],
+  ];
+  const csv = rows.map(r => r.join(',')).join('\n');
+  downloadFile('WeldData_' + new Date().toISOString().slice(0,10) + '.csv', csv, 'text/csv');
+  addLog('ok', 'Weld summary CSV exported — ' + (rows.length-1) + ' records');
+  toast('📊 CSV downloaded — ' + (rows.length-1) + ' weld records', 'green');
+}
+async function exportXML() {
+  let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<ProgramArchive date="${new Date().toISOString().slice(0,10)}" system="WeldControl Studio v4.2">\n`;
+  Object.entries(DEFAULTS).forEach(([id, d]) => {
+    xml += `  <WeldProgram id="${id}">\n    <Process>${d.process}</Process>\n    <TravelSpeed unit="mm/s">${d.speed}</TravelSpeed>\n    <ArcVoltage unit="V">${d.volt}</ArcVoltage>\n    <WireFeed unit="m/min">${d.wire}</WireFeed>\n    <ShieldGas unit="L/min">${d.gas}</ShieldGas>\n    <PreheatTemp unit="C">${d.preheat}</PreheatTemp>\n    <TorchAngle unit="deg">${d.angle}</TorchAngle>\n  </WeldProgram>\n`;
+  });
+  xml += '</ProgramArchive>';
+  downloadFile('Programs_Archive_' + new Date().toISOString().slice(0,10) + '.xml', xml, 'application/xml');
+  addLog('ok', 'XML program archive created — ' + Object.keys(DEFAULTS).length + ' programs');
+  toast('🗜 XML archive downloaded — ' + Object.keys(DEFAULTS).length + ' programs', 'green');
+}
+function printReport() {
+  toast('🖨 Use your browser Ctrl+P / Cmd+P to print', '');
+}
+
+// ── TOAST ─────────────────────────────────────────────
+function toast(msg, color) {
+  const existing = document.querySelector('.toast');
+  if (existing) existing.remove();
+  const t = document.createElement('div'); t.className = 'toast';
+  const colors = { green:'var(--green)', red:'var(--accent)', yellow:'var(--yellow)' };
+  t.style.color = colors[color] || 'var(--text)';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity .4s'; setTimeout(() => t.remove(), 400); }, 3000);
+}
+
+// ── LIVE TICKERS ─────────────────────────────────────────
+function startTickers() {
+  let pass2847 = 203, pass2848 = 88;
+  liveInterval = setInterval(() => {
+    // machine page
+    const mv = (12.4 + (Math.random()-.5)*.5).toFixed(1);
+    const ms = (4.0 + (Math.random()-.5)*.3).toFixed(1);
+    const mt = (18.0 + (Math.random()-.5)*.4).toFixed(1);
+    const mx2 = (148 + (Math.random()-.5)*2).toFixed(1);
+    const my2 = (32 + (Math.random()-.5)).toFixed(1);
+    const mz2 = (12 + (Math.random()-.5)*.5).toFixed(1);
+    const mth2 = (47 + (Math.random()-.5)*3).toFixed(1);
+    [['m1v',mv+' V'],['m1s',ms+' mm/s'],['m1t',mt+' °C'],['mx',mx2],['my',my2],['mz',mz2],['mth',mth2+'°']].forEach(([id,val])=>{
+      const el=document.getElementById(id); if(el) el.textContent=val;
+    });
+    // programs page live
+    if (!isEstopped) {
+      const sv = document.getElementById('speedVal'); const vv = document.getElementById('voltVal');
+      if (sv) sv.textContent = ms + ' mm/s';
+      if (vv) vv.textContent = mv + ' V';
+    }
+    // pass counts
+    if (Math.random() > 0.6) {
+      pass2847++; pass2848++;
+      const p1 = document.getElementById('m1p'); if (p1) p1.textContent = pass2847 + ' / ' + (pass2847+44);
+      const p2 = document.getElementById('m2p'); if (p2) p2.textContent = pass2848 + ' / ' + (pass2848+84);
+      // update progress bars and dashboard
+      const pct2847 = Math.min(100, 82 + (pass2847-203)*0.5);
+      const pct2848 = Math.min(100, 51 + (pass2848-88)*0.3);
+      const pb1 = document.getElementById('pb2847'); if (pb1) pb1.style.width = pct2847 + '%';
+      const pb2 = document.getElementById('pb2848'); if (pb2) pb2.style.width = pct2848 + '%';
+      document.getElementById('dashPct').textContent = Math.round(pct2847) + '%';
+      document.getElementById('weldCount').textContent = 247 + (pass2847 - 203);
+    }
+    // calibration progress
+    if (!calDone) {
+      calPct = Math.min(100, calPct + Math.random() * 0.3);
+      const bar = document.getElementById('calBar'); if (bar) bar.style.width = calPct + '%';
+      const pct = document.getElementById('calPct');
+      if (calPct >= 100) {
+        calDone = true;
+        if (bar) { bar.style.background = 'var(--green)'; }
+        if (pct) pct.textContent = '100% — Calibration complete';
+        const btn = document.getElementById('bringOnlineBtn');
+        if (btn) { btn.style.borderColor = 'var(--green)'; btn.style.color = 'var(--green)'; }
+        addLog('ok', 'ARC-5 gantry calibration complete — ready to bring online');
+        toast('✓ ARC-5 calibration done — bring online when ready', 'green');
+      } else {
+        if (pct) pct.textContent = Math.round(calPct) + '% — ETA ~' + Math.round((100-calPct)/0.18/60) + ' min';
+      }
+    }
+  }, 1500);
+
+  logInterval = setInterval(() => {
+    if (!logPaused && Math.random() > 0.55) {
+      const [type, msg] = LOGMESSAGES[Math.floor(Math.random()*LOGMESSAGES.length)];
+      addLog(type, msg);
+    }
+  }, 2000);
+}
+
+// ── CANVAS DRAWING ──────────────────────────────────────
+function isDark() {
+  const t = document.documentElement.getAttribute('data-theme');
+  if (t === 'dark') return true; if (t === 'light') return false;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches;
+}
+
+function drawLine(canvas, vals, labels, color, opts = {}) {
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.parentElement.clientWidth || 400;
+  const H = parseInt(canvas.style.height) || 140;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+  const ctx = canvas.getContext('2d'); ctx.scale(dpr, dpr);
+  const dark = isDark();
+  const gc = dark ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.06)';
+  const tc = dark ? '#6e7681' : '#8a92a0';
+  const pad = { t:10, r:16, b:30, l:40 };
+  const cW = W - pad.l - pad.r, cH = H - pad.t - pad.b;
+  const mn = opts.min !== undefined ? opts.min : Math.min(...vals)*.97;
+  const mx = opts.max !== undefined ? opts.max : Math.max(...vals)*1.03;
+  const rng = mx - mn || 1;
+  for (let i = 0; i <= 4; i++) {
+    const y = pad.t + cH*(1-i/4);
+    ctx.strokeStyle = gc; ctx.lineWidth = 1; ctx.setLineDash([4,4]);
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(pad.l+cW, y); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = tc; ctx.font = '10px Inter,sans-serif'; ctx.textAlign = 'right';
+    ctx.fillText((mn+rng*i/4).toFixed(1), pad.l-4, y+3);
+  }
+  const xs = vals.map((_,i) => pad.l + (i/(vals.length-1))*cW);
+  const ys = vals.map(v => pad.t + cH*(1-(v-mn)/rng));
+  const grad = ctx.createLinearGradient(0, pad.t, 0, pad.t+cH);
+  grad.addColorStop(0, color+'44'); grad.addColorStop(1, color+'08');
+  ctx.beginPath(); ctx.moveTo(xs[0], pad.t+cH);
+  xs.forEach((x,i) => ctx.lineTo(x, ys[i]));
+  ctx.lineTo(xs[xs.length-1], pad.t+cH); ctx.closePath();
+  ctx.fillStyle = grad; ctx.fill();
+  ctx.beginPath(); ctx.moveTo(xs[0], ys[0]);
+  xs.forEach((x,i) => ctx.lineTo(x, ys[i]));
+  ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.setLineDash([]); ctx.stroke();
+  if (labels) {
+    ctx.fillStyle = tc; ctx.font = '9px Inter,sans-serif'; ctx.textAlign = 'center';
+    const step = Math.ceil(labels.length / 8);
+    labels.forEach((l,i) => { if (i%step===0) ctx.fillText(l, xs[i], H-6); });
+  }
+}
+
+function drawBars(canvas, vals, labels, color) {
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.parentElement.clientWidth || 400;
+  const H = 160;
+  canvas.width = W*dpr; canvas.height = H*dpr;
+  canvas.style.width = W+'px'; canvas.style.height = H+'px';
+  const ctx = canvas.getContext('2d'); ctx.scale(dpr, dpr);
+  const dark = isDark();
+  const tc = dark ? '#6e7681' : '#8a92a0';
+  const gc = dark ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.06)';
+  const pad = { t:10, r:16, b:26, l:36 };
+  const mx = Math.max(...vals)*1.1;
+  const aW = (W-pad.l-pad.r)/vals.length;
+  const bW = aW * 0.55;
+  // threshold line
+  ctx.strokeStyle = 'rgba(231,76,60,.5)'; ctx.lineWidth = 1; ctx.setLineDash([4,4]);
+  const thY = pad.t + (H-pad.t-pad.b)*(1 - 2.8/mx);
+  ctx.beginPath(); ctx.moveTo(pad.l, thY); ctx.lineTo(W-pad.r, thY); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = 'rgba(231,76,60,.6)'; ctx.font = '9px Inter,sans-serif'; ctx.textAlign = 'left';
+  ctx.fillText('Threshold', pad.l+2, thY-3);
+  vals.forEach((v, i) => {
+    const x = pad.l + i*aW + (aW-bW)/2;
+    const bH = (v/mx)*(H-pad.t-pad.b);
+    const overThreshold = v > 2.8;
+    ctx.fillStyle = overThreshold ? '#e74c3c99' : color+'aa';
+    ctx.fillRect(x, pad.t+(H-pad.t-pad.b)-bH, bW, bH);
+    ctx.fillStyle = tc; ctx.font = '9px Inter,sans-serif'; ctx.textAlign = 'center';
+    if (i%4===0) ctx.fillText(labels[i], x+bW/2, H-8);
+  });
+}
+
+function drawGroupedBars(canvas, datasets, labels) {
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.parentElement.clientWidth || 400;
+  const H = 180;
+  canvas.width = W*dpr; canvas.height = H*dpr;
+  canvas.style.width = W+'px'; canvas.style.height = H+'px';
+  const ctx = canvas.getContext('2d'); ctx.scale(dpr, dpr);
+  const dark = isDark();
+  const tc = dark ? '#6e7681' : '#8a92a0';
+  const gc = dark ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.06)';
+  const colors = ['#e74c3c','#3b82f6','#f59e0b'];
+  const pad = { t:10, r:16, b:28, l:36 };
+  const allVals = datasets.flatMap(d => d);
+  const mx = Math.max(...allVals)*1.1;
+  const gW = (W-pad.l-pad.r)/labels.length;
+  const bW = gW*0.22;
+  // grid
+  for (let i = 0; i <= 4; i++) {
+    const y = pad.t + (H-pad.t-pad.b)*(1-i/4);
+    ctx.strokeStyle = gc; ctx.lineWidth = 1; ctx.setLineDash([4,4]);
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(W-pad.r, y); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = tc; ctx.font = '10px Inter,sans-serif'; ctx.textAlign = 'right';
+    ctx.fillText((mx*i/4/1.1).toFixed(0), pad.l-4, y+3);
+  }
+  labels.forEach((lbl, gi) => {
+    datasets.forEach((ds, di) => {
+      const x = pad.l + gi*gW + di*bW + gW*0.12;
+      const bH = (ds[gi]/mx)*(H-pad.t-pad.b);
+      ctx.fillStyle = colors[di]+'bb';
+      ctx.fillRect(x, pad.t+(H-pad.t-pad.b)-bH, bW-2, bH);
+    });
+    ctx.fillStyle = tc; ctx.font = '9px Inter,sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText(lbl, pad.l + gi*gW + gW/2, H-8);
+  });
+  // legend
+  const names = ['LAS-7','PLA-3','ARC-5'];
+  names.forEach((n,i) => {
+    ctx.fillStyle = colors[i]; ctx.fillRect(W-140+i*46, 4, 8, 8);
+    ctx.fillStyle = tc; ctx.font = '9px Inter,sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText(n, W-130+i*46, 12);
+  });
+}
+
+function drawGeom(canvas, headPct) {
+  if (headPct === undefined) headPct = calDone ? 1.0 : 0.82;
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.parentElement.clientWidth || 400;
+  const H = 200;
+  canvas.width = W*dpr; canvas.height = H*dpr;
+  canvas.style.width = W+'px'; canvas.style.height = H+'px';
+  const ctx = canvas.getContext('2d'); ctx.scale(dpr, dpr);
+  ctx.fillStyle = '#0d1117'; ctx.fillRect(0, 0, W, H);
+  const cx = W/2, cy = H/2;
+  ctx.strokeStyle = 'rgba(99,102,241,.1)'; ctx.lineWidth = 1;
+  for (let gx = 0; gx < W; gx += 30) { ctx.beginPath(); ctx.moveTo(gx,0); ctx.lineTo(gx,H); ctx.stroke(); }
+  for (let gy = 0; gy < H; gy += 30) { ctx.beginPath(); ctx.moveTo(0,gy); ctx.lineTo(W,gy); ctx.stroke(); }
+  ctx.strokeStyle = '#79c0ff'; ctx.lineWidth = 1.5; ctx.setLineDash([4,4]);
+  ctx.beginPath(); ctx.ellipse(cx, cy, Math.min(cx-20, 110), 50, 0.2, 0, Math.PI*2); ctx.stroke();
+  ctx.setLineDash([]);
+  const pts = [];
+  for (let t = 0; t <= 1; t += 0.02) {
+    const angle = t*Math.PI*2*0.85 - 0.3;
+    const r = Math.min(cx-25, 100);
+    pts.push({ x: cx + Math.cos(angle)*(r + Math.sin(t*8)*4), y: cy + Math.sin(angle)*(45 + Math.sin(t*6)*2) });
+  }
+  // completed path
+  const donePts = pts.slice(0, Math.floor(pts.length * headPct));
+  if (donePts.length > 1) {
+    ctx.beginPath(); ctx.moveTo(donePts[0].x, donePts[0].y);
+    donePts.forEach(p => ctx.lineTo(p.x, p.y));
+    ctx.strokeStyle = '#e74c3c'; ctx.lineWidth = 2.5; ctx.stroke();
+  }
+  // remaining path (dim)
+  const remPts = pts.slice(Math.max(0, Math.floor(pts.length*headPct)-1));
+  if (remPts.length > 1) {
+    ctx.beginPath(); ctx.moveTo(remPts[0].x, remPts[0].y);
+    remPts.forEach(p => ctx.lineTo(p.x, p.y));
+    ctx.strokeStyle = 'rgba(231,76,60,.25)'; ctx.lineWidth = 1.5; ctx.stroke();
+  }
+  // head
+  if (donePts.length > 0) {
+    const hp = donePts[donePts.length-1];
+    ctx.beginPath(); ctx.arc(hp.x, hp.y, 5, 0, Math.PI*2);
+    ctx.fillStyle = '#e74c3c'; ctx.fill();
+    ctx.beginPath(); ctx.arc(hp.x, hp.y, 10, 0, Math.PI*2);
+    ctx.strokeStyle = 'rgba(231,76,60,.4)'; ctx.lineWidth = 1.5; ctx.stroke();
+  }
+  ctx.fillStyle = '#79c0ff'; ctx.font = '11px JetBrains Mono,monospace'; ctx.textAlign = 'left';
+  ctx.fillText('ARC-5 Gantry — WP-2849 path preview', 14, 18);
+  ctx.fillStyle = '#e74c3c'; ctx.font = '10px JetBrains Mono,monospace';
+  ctx.fillText('● Weld head (' + Math.round(headPct*100) + '% complete)', 14, H-10);
+}
+
+function drawAll() {
+  const hours = Array.from({length:24},(_,i)=>i+':00');
+  const voltData = Array.from({length:24},(_,i)=>12.4+Math.sin(i*.5)*.6+Math.random()*.3);
+  const wireData = Array.from({length:24},(_,i)=>3.3+Math.cos(i*.4)*.4+Math.random()*.2);
+  const vc = document.getElementById('voltChart'); if (vc) drawLine(vc, voltData, hours, '#e74c3c', {min:10.5,max:14.5});
+  const wc = document.getElementById('wireChart'); if (wc) drawLine(wc, wireData, hours, '#3b82f6', {min:2.5,max:4.5});
+  const sc = document.getElementById('sensorChart');
+  const sensVals = Array.from({length:20},(_,i)=>2.2+Math.sin(i*.8)*.6+Math.random()*.3);
+  const sTicks = Array.from({length:20},(_,i)=>i*3+'m');
+  if (sc) drawBars(sc, sensVals, sTicks, '#d97706');
+  const pc = document.getElementById('passChart');
+  if (pc) drawLine(pc, [97.2,97.8,98.0,97.6,98.2,98.4,97.9,98.1,98.3,98.5,98.1,98.4], ['w1','w2','w3','w4','w5','w6','w7','w8','w9','w10','w11','w12'], '#16a34a', {min:96.5,max:99});
+  const uc = document.getElementById('utilChart');
+  if (uc) drawGroupedBars(uc, [[6.2,7.1,5.8,6.5,6.9,7.0],[4.8,5.2,4.5,5.1,5.4,5.0],[1.2,0.8,2.1,1.5,0.0,0.0]], ['Mon','Tue','Wed','Thu','Fri','Sat']);
+  const gc2 = document.getElementById('geomCanvas'); if (gc2) drawGeom(gc2);
+}
+
+// ── INIT ─────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  renderXml('WP-2847', DEFAULTS['WP-2847']);
+  // seed log
+  ['Shift A started — operator: J. Parekh — PLC handshake OK',
+   'ARC-5 taken offline for gantry calibration',
+   'F-0038 raised: shield gas 18.9 L/min (high)',
+   'Weld quality check passed — WP-2847 pass #201',
+   'OpenCV seam detection: deviation 0.08mm (pass)',
+   'F-0041 raised: wire tension 3.1 N on PLA-3',
+   'WP-2847 resumed · LAS-7 · pass #203'].forEach((m,i) => {
+    const types = ['info','err','warn','ok','ok','warn','ok'];
+    addLog(types[i], m);
+  });
+  drawAll();
+  startTickers();
+});
+window.addEventListener('resize', drawAll);
+</script>
+
+</body></html>
